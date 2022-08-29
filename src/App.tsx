@@ -4,15 +4,18 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Vault } from "./pages";
 import Header from "./components/Header";
+import Layout from "./components/Layout";
 function App() {
   return (
     <BrowserRouter>
-      <Header />
-      <Routes>
-        <Route path="/" element={<Vault />} />
-        {/* <Route path="dashboard" element={<Dashboard />} /> */}
-        {/* <Route path="*" element={<NotFound />} />  */}
-      </Routes>
+      <Layout>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Vault />} />
+          {/* <Route path="dashboard" element={<Dashboard />} /> */}
+          {/* <Route path="*" element={<NotFound />} />  */}
+        </Routes>
+      </Layout>
     </BrowserRouter>
   );
 }

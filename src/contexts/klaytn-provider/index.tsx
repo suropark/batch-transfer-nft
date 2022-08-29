@@ -11,11 +11,11 @@ import {
   Web3Provider,
 } from "@ethersproject/providers";
 import platform from "platform-detect";
-import Web3Modal from "web3Modal";
+
 import { KlipProvider } from "./klip";
 import Caver from "caver-js";
 import { ConnectedProvider } from "./connectedProvider";
-
+import Web3Modal from "web3modal";
 type onChainProvider = {
   connect: (options?: { cached: boolean }) => Promise<ConnectedProvider>;
   disconnect: () => void;
@@ -120,7 +120,7 @@ export const Web3ContextProvider: React.FC<IWeb3ContextProvider> = ({
     new Web3Modal({
       providerOptions,
       cacheProvider: cached,
-      // theme: "dark",
+      theme: "dark",
     })
   );
 
