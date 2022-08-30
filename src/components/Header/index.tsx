@@ -3,18 +3,21 @@ import React from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+
+import { Link } from "react-router-dom";
 import { useWeb3Context } from "../../contexts/klaytn-provider";
+import { shortenAddress } from "../../utils/shortenAddress";
 type Props = {};
 const menuList = [
   {
-    name: "Vault",
+    name: "NFT",
   },
   {
-    name: "veBTRY",
+    name: "Token",
   },
-  {
-    name: "status",
-  },
+  // {
+  // name: "status",
+  // },
 ];
 
 const Logo = () => {
@@ -54,8 +57,12 @@ const TopMenu = () => {
         },
       }}
     >
-      {menuList.map((m) => {
-        return <Box>{m.name}</Box>;
+      {menuList.map((m, i) => {
+        return (
+          <Box key={i}>
+            <Link to={`/${m.name.toLowerCase()}`}>{m.name}</Link>
+          </Box>
+        );
       })}
     </Box>
   );
@@ -77,8 +84,8 @@ const TokenPrice = () => {
     </Box>
   );
 };
-const ConnectWallet = () => {
-  const { connect, connected, address } = useWeb3Context();
+export const ConnectWallet = () => {
+  const { connect, connected, address, disconnect } = useWeb3Context();
   return (
     <Box
       sx={{
@@ -90,12 +97,12 @@ const ConnectWallet = () => {
       }}
     >
       <Button
-        onClick={() => connect()}
+        onClick={() => (connected ? disconnect() : connect())}
         sx={{
           fontWeight: "bold",
         }}
       >
-        Connect Wallet
+        {connected ? shortenAddress(address) : "Connect Wallet"}
       </Button>
     </Box>
   );
@@ -132,7 +139,11 @@ const SideMenu = () => {
         anchorEl={anchorEl}
       >
         {menuList.map((m) => {
-          return <MenuItem onClick={handleClose}>{m.name}</MenuItem>;
+          return (
+            <MenuItem onClick={handleClose}>
+              <Link to={`/${m.name.toLowerCase()}`}>{m.name}</Link>
+            </MenuItem>
+          );
         })}
       </Menu>
     </Box>

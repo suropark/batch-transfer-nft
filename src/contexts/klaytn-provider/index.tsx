@@ -61,7 +61,7 @@ interface IWeb3ContextProvider {
 }
 
 const DEFAULT_NETWORK = 8217;
-const getMainnetURI = () => "";
+const getMainnetURI = () => "https://public-node-api.klaytnapi.com/v1/cypress";
 
 export const Web3ContextProvider: React.FC<IWeb3ContextProvider> = ({
   rpcUrl,
@@ -197,9 +197,9 @@ export const Web3ContextProvider: React.FC<IWeb3ContextProvider> = ({
 
       if (rawProvider.wc) {
         setAddress(rawProvider.accounts[0]);
-      } else if (!rawProvider.isKaiKas) {
-        setAddress(rawProvider.selectedAddress);
-      }
+      } else setAddress(rawProvider.selectedAddress);
+      // else if (!rawProvider.isKaiKas) {
+      // }
 
       //   setChainID(chainId);
 

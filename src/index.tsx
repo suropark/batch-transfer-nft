@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Web3ContextProvider } from "./contexts/klaytn-provider";
+import { NftContextProvider } from "./contexts/nft-provider";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -11,7 +12,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Web3ContextProvider>
-      <App />
+      <NftContextProvider>
+        <App />
+      </NftContextProvider>
     </Web3ContextProvider>
   </React.StrictMode>
 );
