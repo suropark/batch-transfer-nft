@@ -25,3 +25,9 @@ export function getNftImgUrl(metaDataImgSrc: string): {
 
   return { imgSrc: imgSrcUrl, isVideo: isVideo };
 }
+
+export function getUri(tokenURI: string): string {
+  if (tokenURI.startsWith("https://") || tokenURI.startsWith("https://ipfs"))
+    return tokenURI;
+  else return `https://ipfs.io/ipfs/${tokenURI.substring(7)}`;
+}

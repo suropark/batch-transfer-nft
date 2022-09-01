@@ -13,14 +13,23 @@ import { useWeb3Context } from "../../contexts/klaytn-provider";
 import { range } from "../../utils/range";
 import NftCard from "../../components/NftCard";
 import { getNftImgUrl } from "../../utils/nftImg";
+import { useNftContext } from "../../contexts/nft-provider";
+import axios from "axios";
 type Props = {};
 
 const NftTransfer = (props: Props) => {
   const { connected } = useWeb3Context();
+  const { getNftInWallet, nftInWallet } = useNftContext();
 
   // if (!connected) {
   //   return <ConnectWallet />;
   // }
+
+  React.useEffect(() => {
+    getNftInWallet("0xe47e90c58f8336a2f24bcd9bcb530e2e02e1e8ae");
+    axios.get('https://claimswap-slime-nft.s3.ap-northeast-2.amazonaws.com/metadata/1030.json')
+  }, [connected]);
+
   return (
     <Box
       sx={{
@@ -62,7 +71,7 @@ const NftTransfer = (props: Props) => {
                   "https://moksha.s3.ap-northeast-2.amazonaws.com/moksha.mp4"
                 )
               : getNftImgUrl(
-                  "https://storage.googleapis.com/dsc-mate/336/dscMate-5664.png"
+                  "https://storage.googleapis.com/dsc-mate/336/dscMate-5664.png "
                 );
 
           return <NftCard isVideo={t.isVideo} src={t.imgSrc} />;
