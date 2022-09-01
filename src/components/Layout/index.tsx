@@ -1,4 +1,4 @@
-import Box from "@mui/material/Box";
+import Box from "@mui/joy/Box";
 import React from "react";
 
 type Props = {

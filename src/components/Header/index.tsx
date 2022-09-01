@@ -1,9 +1,9 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/joy";
 import React from "react";
 import MenuIcon from "@mui/icons-material/Menu";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-
+import Menu from "@mui/joy/Menu";
+import MenuItem from "@mui/joy/MenuItem";
+import Button from "@mui/joy/Button";
 import { Link } from "react-router-dom";
 import { useWeb3Context } from "../../contexts/klaytn-provider";
 import { shortenAddress } from "../../utils/shortenAddress";
@@ -33,7 +33,7 @@ const Logo = () => {
     >
       <img src="/KLAY.png" alt="KLAY" height={100} />
       <Typography
-        variant="h3"
+        level="h3"
         sx={{
           display: {
             xs: "none",
@@ -52,7 +52,7 @@ const TopMenu = () => {
     <Box
       sx={{
         display: {
-          sm: "none",
+          xs: "none",
           lg: "flex",
         },
       }}
@@ -90,17 +90,17 @@ export const ConnectWallet = () => {
     <Box
       sx={{
         p: "4px 20px",
-        border: "1px solid #ccc",
-        borderRadius: "4px",
+        // border: "1px solid #ccc",
+        // borderRadius: "4px",
         display: "flex",
         alignItems: "center",
       }}
     >
       <Button
+        variant="solid"
+        size="lg"
+        // color="danger"
         onClick={() => (connected ? disconnect() : connect())}
-        sx={{
-          fontWeight: "bold",
-        }}
       >
         {connected ? shortenAddress(address) : "Connect Wallet"}
       </Button>
@@ -121,9 +121,11 @@ const SideMenu = () => {
     <Box
       sx={{
         display: {
-          sm: "block",
+          xs: "flex",
           lg: "none",
         },
+        pr: 3,
+        alignItems: "center",
       }}
     >
       <Button onClick={handleClick}>
@@ -133,15 +135,13 @@ const SideMenu = () => {
         id="basic-menu"
         open={open}
         onClose={handleClose}
-        MenuListProps={{
-          "aria-labelledby": "basic-button",
-        }}
         anchorEl={anchorEl}
       >
         {menuList.map((m) => {
           return (
             <MenuItem onClick={handleClose}>
-              <Link to={`/${m.name.toLowerCase()}`}>{m.name}</Link>
+              {/* <Link to={`/${m.name.toLowerCase()}`}>{m.name}</Link> */}
+              {m.name}
             </MenuItem>
           );
         })}

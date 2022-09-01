@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { createContext, ReactElement, useContext, useMemo } from "react";
-import { ERC721ABI } from "../../components/constants";
+import { ERC721ABI } from "../../constants";
 import { useWeb3Context } from "../klaytn-provider";
 
 type onChainProvider = {
