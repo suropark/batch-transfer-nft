@@ -11,6 +11,10 @@ import {
 } from "@mui/joy";
 import fallbackImg from "./404.png";
 import AddIcon from "@mui/icons-material/Add";
+import { getImgFromUri, getNftImgUrl, getUri } from "../../utils/nftImg";
+import { shortenAddress } from "../../utils/shortenAddress";
+import { verifyNft } from "../../contexts/nft-provider/verifiedNft";
+import DoneIcon from "@mui/icons-material/Done";
 type Props = {
   isVideo?: boolean;
   src?: string;
@@ -18,6 +22,7 @@ type Props = {
   onSelect?: () => void;
   tokenId?: string;
   nftContract?: string;
+  nftData?: any;
 };
 
 const imageOnErrorHandler = (
@@ -26,10 +31,19 @@ const imageOnErrorHandler = (
   event.currentTarget.src = fallbackImg;
   event.currentTarget.className = "error";
 };
-const index = ({ isVideo, src }: Props) => {
+const Index = ({ isVideo, src, nftData }: Props) => {
+  const [img, setImg] = React.useState("");
+  const [id, setId] = React.useState("");
+  const [contract, setContract] = React.useState("");
+
+  React.useEffect(() => {
+    setId(nftData.id);
+    setContract(verifyNft(nftData.contractAddress));
+    getImgFromUri(nftData.uri).then(setImg);
+  }, []);
+
   return (
     <Card
-        
       component="li"
       variant="outlined"
       sx={(theme) => ({
@@ -45,11 +59,23 @@ const index = ({ isVideo, src }: Props) => {
         },
       })}
     >
+      <DoneIcon
+        sx={{
+          width: "100%",
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          zIndex: "50",
+          transform: "translate(-50%,-50%)",
+        }}
+      />
       <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
         <Typography level="h2" fontSize="md" sx={{ alignSelf: "flex-start" }}>
-          NFT Contract
+          {/* NFT Contract */}
+          {shortenAddress(contract)}
         </Typography>
-        <Typography level="body2">Token Id</Typography>
+        {/* <Typography level="body2">Token Id</Typography> */}
+        <Typography level="body2">{id}</Typography>
       </Box>
       {/* <IconButton
         variant="plain"
@@ -60,20 +86,22 @@ const index = ({ isVideo, src }: Props) => {
         <AddIcon />
       </IconButton> */}
       <AspectRatio minHeight="200px" maxHeight="200px" sx={{ my: 2 }}>
-        {isVideo ? (
-          <video autoPlay loop muted>
-            <source src={src} type="video/mp4" />
-          </video>
-        ) : (
-          <img
-            src={src}
-            alt=""
-            onError={imageOnErrorHandler}
-            style={{
-              objectFit: "scale-down",
-            }}
-          />
-        )}
+        {img !== "" ? (
+          isVideo ? (
+            <video autoPlay loop muted>
+              <source src={img} type="video/mp4" />
+            </video>
+          ) : (
+            <img
+              src={img}
+              alt=""
+              onError={imageOnErrorHandler}
+              style={{
+                objectFit: "scale-down",
+              }}
+            />
+          )
+        ) : null}
       </AspectRatio>
       {/* <Box sx={{ display: "flex" }}>
         <div>
@@ -95,4 +123,4 @@ const index = ({ isVideo, src }: Props) => {
   );
 };
 
-export default index;
+export default Index;

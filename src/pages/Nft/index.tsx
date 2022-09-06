@@ -8,27 +8,24 @@ import {
   CardContent,
   Button,
 } from "@mui/joy";
-import React from "react";
+import React, { useState } from "react";
 import { useWeb3Context } from "../../contexts/klaytn-provider";
 import { range } from "../../utils/range";
 import NftCard from "../../components/NftCard";
 import { getNftImgUrl } from "../../utils/nftImg";
 import { useNftContext } from "../../contexts/nft-provider";
 import axios from "axios";
+import { ethers } from "ethers";
 type Props = {};
 
 const NftTransfer = (props: Props) => {
   const { connected } = useWeb3Context();
-  const { getNftInWallet, nftInWallet } = useNftContext();
-
+  const { getNftInWallet, nftInWallet, registerNft } = useNftContext();
+  console.log(nftInWallet);
+  const [nftAddrToAdd, setNftAddrToAdd] = useState("");
   // if (!connected) {
   //   return <ConnectWallet />;
   // }
-
-  React.useEffect(() => {
-    getNftInWallet("0xe47e90c58f8336a2f24bcd9bcb530e2e02e1e8ae");
-    axios.get('https://claimswap-slime-nft.s3.ap-northeast-2.amazonaws.com/metadata/1030.json')
-  }, [connected]);
 
   return (
     <Box
@@ -48,6 +45,19 @@ const NftTransfer = (props: Props) => {
         label="Add NFT Contract"
         placeholder="Type in here…"
         fullWidth
+        onChange={(e) => setNftAddrToAdd(e.target.value)}
+        value={nftAddrToAdd}
+        error={nftAddrToAdd !== "" && !ethers.utils.isAddress(nftAddrToAdd)}
+        // helperText={}
+        endDecorator={
+          <Button
+            onClick={async () => {
+              await registerNft(nftAddrToAdd);
+            }}
+          >
+            Add
+          </Button>
+        }
       />
       <TextField label="Recipient" placeholder="Type in here…" fullWidth />
       <Box>NFT List</Box>
@@ -64,17 +74,12 @@ const NftTransfer = (props: Props) => {
           justifyContent: "center",
         }}
       >
-        {range(10).map((c, key) => {
-          const t =
-            key % 2 === 0
-              ? getNftImgUrl(
-                  "https://moksha.s3.ap-northeast-2.amazonaws.com/moksha.mp4"
-                )
-              : getNftImgUrl(
-                  "https://storage.googleapis.com/dsc-mate/336/dscMate-5664.png "
-                );
-
-          return <NftCard isVideo={t.isVideo} src={t.imgSrc} />;
+        {Object.keys(nftInWallet).map((nftAddr) => {
+          return nftInWallet[nftAddr].map((nft: any) => {
+            return (
+              <NftCard nftData={nft} isVideo={nft.isVideo} src={nft.imgSrc} />
+            );
+          });
         })}
       </Box>
 

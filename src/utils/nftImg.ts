@@ -31,3 +31,11 @@ export function getUri(tokenURI: string): string {
     return tokenURI;
   else return `https://ipfs.io/ipfs/${tokenURI.substring(7)}`;
 }
+
+
+export async function getImgFromUri(tokenURI: string): Promise<string> {
+  const uri = getUri(tokenURI);
+  const res = await fetch(uri);
+  const data = await res.json();
+  return data.image;
+}

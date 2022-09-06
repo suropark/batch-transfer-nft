@@ -4,6 +4,7 @@ import {
   createContext,
   ReactElement,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -11,12 +12,14 @@ import { ERC721ABI } from "../../constants";
 import { multicall } from "../../utils/multicall";
 import { getUri } from "../../utils/nftImg";
 import { getMainnetURI, useWeb3Context } from "../klaytn-provider";
+import { NftInWallet } from "./types";
 const caver = new Caver(getMainnetURI());
 
 type onChainProvider = {
   isNft: (address: string) => Promise<boolean>;
   getNftInWallet: any;
   nftInWallet: any;
+  registerNft: any;
 };
 
 export type NftContextData = {
@@ -47,11 +50,12 @@ export const NftContextProvider: React.FC<INftContextProvider> = ({
 }) => {
   const { provider, address } = useWeb3Context();
 
-  const [nftInWallet, setNftInWallet] = useState<any[]>([]);
+  const [nftInWallet, setNftInWallet] = useState<NftInWallet>({});
 
   const ERC721InterfaceId: string = "0x80ac58cd";
   const ERC1155InterfaceId: string = "0xd9b67a26";
   const KIP17InterfaceId: string = "0x80ac58cd";
+
   const isNft = async (contractAddress: string) => {
     if (!ethers.utils.isAddress(contractAddress)) return false;
 
@@ -67,7 +71,7 @@ export const NftContextProvider: React.FC<INftContextProvider> = ({
   };
 
   const getNftInWallet = async (contractAddress: string) => {
-    if (!address) return;
+    if (!address) return [];
 
     const tmp = new caver.contract(ERC721ABI as any, contractAddress);
     let incomingTokenTransferEvents = await tmp
@@ -97,20 +101,36 @@ export const NftContextProvider: React.FC<INftContextProvider> = ({
           });
         }
       });
-
-      console.log(datas);
+      // uri가 아니라 image를 가져와야 할듯 fetch 한번 더 해서
     });
 
-    setNftInWallet(datas);
+    return datas || [];
   };
 
+  const registerNft = async (contractAddress: string): Promise<boolean> => {
+    if (!address) return false;
+
+    // no need to update
+    if (nftInWallet[contractAddress.toLowerCase()]) {
+      return false;
+    } else {
+      const nft = await getNftInWallet(contractAddress);
+
+      setNftInWallet((prev) => ({
+        ...prev,
+        [contractAddress.toLowerCase()]: nft,
+      }));
+    }
+    return true;
+  };
   const onChainProvider = useMemo(
     () => ({
       isNft,
       getNftInWallet,
       nftInWallet,
+      registerNft,
     }),
-    [isNft, getNftInWallet, nftInWallet]
+    [isNft, getNftInWallet, nftInWallet, registerNft]
   );
   return (
     <NftContext.Provider value={{ onChainProvider }}>
