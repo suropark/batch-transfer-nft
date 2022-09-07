@@ -15,6 +15,8 @@ import { getImgFromUri, getNftImgUrl, getUri } from "../../utils/nftImg";
 import { shortenAddress } from "../../utils/shortenAddress";
 import { verifyNft } from "../../contexts/nft-provider/verifiedNft";
 import DoneIcon from "@mui/icons-material/Done";
+import { ReactComponent as CheckedIcon } from "./checkActive.svg";
+import { useNftContext } from "../../contexts/nft-provider";
 type Props = {
   isVideo?: boolean;
   src?: string;
@@ -35,6 +37,7 @@ const Index = ({ isVideo, src, nftData }: Props) => {
   const [img, setImg] = React.useState("");
   const [id, setId] = React.useState("");
   const [contract, setContract] = React.useState("");
+  const { onSelectNft } = useNftContext();
 
   React.useEffect(() => {
     setId(nftData.id);
@@ -58,15 +61,22 @@ const Index = ({ isVideo, src, nftData }: Props) => {
           cursor: "pointer",
         },
       })}
+      onClick={() => {
+        onSelectNft(nftData);
+      }}
     >
-      <DoneIcon
-        sx={{
-          width: "100%",
+      <CheckedIcon
+        style={{
+          display: nftData.isSelected ? "block" : "none",
           position: "absolute",
           top: "50%",
           left: "50%",
+          transform: "translate(-50%, -50%)",
           zIndex: "50",
-          transform: "translate(-50%,-50%)",
+          // backgroundColor: "red",
+          width: "50%",
+          height: "50%",
+          // background: 'url("/checkActive.svg") no-repeat center cover',
         }}
       />
       <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
@@ -97,6 +107,7 @@ const Index = ({ isVideo, src, nftData }: Props) => {
               alt=""
               onError={imageOnErrorHandler}
               style={{
+                // filter:   "grayscale(100%)",
                 objectFit: "scale-down",
               }}
             />
@@ -122,5 +133,4 @@ const Index = ({ isVideo, src, nftData }: Props) => {
     </Card>
   );
 };
-
 export default Index;

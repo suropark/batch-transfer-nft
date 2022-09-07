@@ -16,6 +16,8 @@ import { getNftImgUrl } from "../../utils/nftImg";
 import { useNftContext } from "../../contexts/nft-provider";
 import axios from "axios";
 import { ethers } from "ethers";
+import { InfoOutlined } from "@mui/icons-material";
+import { verifyNft } from "../../contexts/nft-provider/verifiedNft";
 type Props = {};
 
 const NftTransfer = (props: Props) => {
@@ -39,8 +41,7 @@ const NftTransfer = (props: Props) => {
       }}
     >
       <Typography level="h4">Transfer your NFTs at once</Typography>
-
-      <TextField label="Network" placeholder="Type in here…" fullWidth />
+      {/* <TextField label="Network" placeholder="Type in here…" fullWidth /> */}
       <TextField
         label="Add NFT Contract"
         placeholder="Type in here…"
@@ -53,16 +54,46 @@ const NftTransfer = (props: Props) => {
           <Button
             onClick={async () => {
               await registerNft(nftAddrToAdd);
+              setNftAddrToAdd("");
             }}
           >
             Add
           </Button>
         }
       />
+      <Box sx={{ width: "100%" }}>
+        <Typography
+          level="body2"
+          sx={{
+            alignItems: "flex-start",
+            maxWidth: 240,
+            wordBreak: "break-all",
+          }}
+        >
+          Added Contract
+        </Typography>
+        <Box>
+          {Object.keys(nftInWallet).map((nftAddr) => {
+            return (
+              <Box sx={{ display: "flex" }}>
+                {nftAddr} -
+                <Typography
+                  startDecorator={<InfoOutlined />}
+                  level="body3"
+                  variant="outlined"
+                  ml={1}
+                >
+                  {verifyNft(nftAddr)}
+                </Typography>
+              </Box>
+            );
+          })}
+        </Box>
+      </Box>
+
       <TextField label="Recipient" placeholder="Type in here…" fullWidth />
       <Box>NFT List</Box>
       {/* <TextField label="Nft Address" placeholder="Type in here…" fullWidth /> */}
-
       <Box
         component="ul"
         sx={{
@@ -82,7 +113,6 @@ const NftTransfer = (props: Props) => {
           });
         })}
       </Box>
-
       <Button>Approve</Button>
       <Button>Transfer </Button>
     </Box>

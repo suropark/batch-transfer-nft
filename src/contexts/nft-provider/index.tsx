@@ -20,6 +20,7 @@ type onChainProvider = {
   getNftInWallet: any;
   nftInWallet: any;
   registerNft: any;
+  onSelectNft: any;
 };
 
 export type NftContextData = {
@@ -98,6 +99,7 @@ export const NftContextProvider: React.FC<INftContextProvider> = ({
             contractAddress,
             id: incomingTokenTransferEvents[key],
             uri,
+            isSelected: false,
           });
         }
       });
@@ -123,14 +125,32 @@ export const NftContextProvider: React.FC<INftContextProvider> = ({
     }
     return true;
   };
+
+  const onSelectNft = (selectedNftData: any) => {
+    setNftInWallet((prev) => ({
+      ...prev,
+      [selectedNftData.contractAddress.toLowerCase()]: prev[
+        selectedNftData.contractAddress.toLowerCase()
+      ].map((nft: any) => {
+        if (nft.id === selectedNftData.id) {
+          return {
+            ...nft,
+            isSelected: !nft.isSelected,
+          };
+        }
+        return nft;
+      }),
+    }));
+  };
   const onChainProvider = useMemo(
     () => ({
       isNft,
       getNftInWallet,
       nftInWallet,
       registerNft,
+      onSelectNft,
     }),
-    [isNft, getNftInWallet, nftInWallet, registerNft]
+    [isNft, getNftInWallet, nftInWallet, registerNft, onSelectNft]
   );
   return (
     <NftContext.Provider value={{ onChainProvider }}>
